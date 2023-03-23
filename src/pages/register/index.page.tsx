@@ -12,7 +12,7 @@ const registerFormSchema = z.object({
     .transform((username) => username.toLowerCase()),/* Joga tudo para minusculo */
   name: z.string()
     .min(3, { message: 'O nome precisa ter pelo menos 3 caracteres' })
-    .regex(/^([a-z]+)$/i, { message: 'Só é permitido letras' })
+    .regex(/^([a-z\\ ]+)$/i, { message: 'Só é permitido letras' })/* foi necessário por um espaço depois das \\ para validar o espaço entre nomes */
 });
 
 type RegisterFormData = z.infer<typeof registerFormSchema>;
