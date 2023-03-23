@@ -3,6 +3,8 @@ import { Container, Form, FormError, Header } from "./styles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "phosphor-react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { z } from "zod";
 
 const registerFormSchema = z.object({
@@ -18,9 +20,16 @@ const registerFormSchema = z.object({
 type RegisterFormData = z.infer<typeof registerFormSchema>;
 
 export default function Register() {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
+  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
   });
+
+  const router = useRouter(); // serve para pegar o corpo da requisição tbm
+  useEffect(() => {
+    if (router.query.username) {
+      setValue('username', String(router.query.username))
+    }
+  }, [router.query?.username, setValue]);
 
   async function handleRegister(data: RegisterFormData) {
     console.log(data);
@@ -48,7 +57,7 @@ export default function Register() {
               prefix="ignite.com/"
               placeholder="seu-usuario"
               {...register('username')} />
-            
+
             {errors.username && (
               <FormError size='sm'>
                 {errors.username.message}
@@ -64,7 +73,7 @@ export default function Register() {
             <TextInput
               placeholder="Seu nome"
               {...register('name')} />
-            
+
             {errors.name && (
               <FormError size='sm'>
                 {errors.name.message}

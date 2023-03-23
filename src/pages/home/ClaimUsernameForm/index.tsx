@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FromAnnotation } from "./styles";
 import { ArrowRight } from "phosphor-react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 import { z } from "zod";
 
 /* Essa constante uzando o zod 
@@ -19,17 +20,23 @@ const claimUsernameFormSchema = z.object({
 type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
 
 export function ClaimUsernameForm() {
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<ClaimUsernameFormData>({
+  const { register, handleSubmit, formState: { errors, isValid, isSubmitting } } = useForm<ClaimUsernameFormData>({
     /* Estrutura para validações */
     resolver: zodResolver(claimUsernameFormSchema),
   });
 
+  const router = useRouter(); // redirecionar o usuário
+
   async function handleClaimUsername(data: ClaimUsernameFormData) {
-    console.log(data);
+    const { username } = data;
+
+    await router.push(`/register?username=${username}`);
+    /* isso faz com que o usuário seja redirecionado a sintaxe é
+     * /paginaQueVouMandarOusuario
+     * o simbulo de ? é para indicar que estou mandando um parametro
+     * e então envio a variável que desejo */
   };
-  
-  console.log(errors)
-  console.log(isValid)
+
   return (
     <>
       <Form as='form' onSubmit={handleSubmit(handleClaimUsername)}>
@@ -42,7 +49,7 @@ export function ClaimUsernameForm() {
         <Button
           size={"sm"}
           type="submit"
-          disabled={!isValid}
+          disabled={!isValid || isSubmitting}
         >
           Reservar
           <ArrowRight />
