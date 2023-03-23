@@ -19,20 +19,19 @@ export const Hero = styled('div', {
    * é apenas para os componentes de maior nível e não 
    * os que estão dentro dos componentes
    */
-  [`>${Heading}`]: {
-    fontSize: '$4xl',
 
-    '@media(max-width:600px)': {
+  [`> ${Heading}`]: {
+    fontSize: '$4xl',
+    '@media(max-width: 600px)': {
       fontSize: '$6xl',
     },
   },
 
-  [`>${Text}`]:{
+  [`> ${Text}`]: {
     fontSize: '$lg',
-    marginTop: '$2',
+    maskType: '$2',
     color: '$gray200',
   },
-
 });
 
 export const Preview = styled('div', {
