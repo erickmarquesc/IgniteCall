@@ -18,15 +18,20 @@ export const Header = styled('div', {
     color: '$gray200',
   },
 });
+
 export const Form = styled(Box, {
+  gap: '$4',
   marginTop: '$6',
   display: 'flex',
   flexDirection: 'column',
-  gap: '$4',
 
   label: {
+    gap: '$2',
     display: 'flex',
     flexDirection: 'column',
-    gap: '$2',
   }
+});
+
+export const FormError = styled(Text, {
+  color: '#f75a68' // Cor fora do DesignerSystem 
 });
