@@ -1,10 +1,9 @@
 import { Button, Heading, MultiStep, Text } from "@ignite-ui/react";
-import { AuthError, ConnecItem, ConnectBox, ProfileImg } from "./styles";
+import { AuthError, ConnecItem, ConnectBox } from "./styles";
 import { signIn, useSession } from "next-auth/react";
-import { ArrowRight } from "phosphor-react";
+import { ArrowRight, Check } from "phosphor-react";
 import { Container, Header } from "../styles";
 import { useRouter } from "next/router";
-import Image from 'next/image';
 
 export default function Register() {
   const session = useSession(); // contem as informações do usuário
@@ -13,7 +12,7 @@ export default function Register() {
   const router = useRouter();
   const hasAuthError = !!router.query.error;
 
-  const isSignedIn = session.status === "authenticated";
+  const isSignedId = session.status === "authenticated";
 
   const handleConnectCalendar = async () => await signIn('google');
 
@@ -33,26 +32,28 @@ export default function Register() {
       </Header>
 
       <ConnectBox>
-
         <ConnecItem>
           <div>
-            <Text>{sessionUserData?.user?.name}</Text>
-            <Text size={"xs"}>{sessionUserData?.user?.email}</Text>
+            <Text>
+              {sessionUserData?.user?.name
+                ? sessionUserData?.user?.name
+                : 'Google Agenda'}
+            </Text>
+            {sessionUserData?.user?.email
+              ? <Text size={"xs"}>{sessionUserData?.user?.email}</Text>
+              : <></>
+            }
           </div>
-          {isSignedIn ? (
-            <ProfileImg>
-              <Image
-                src={sessionUserData?.user?.image ?? ''}
-                width={50}
-                height={50} /* Altura máxima que a imagem vai esticar */
-                quality={100} /* Por padrão o next reduz a qualidade para 80% então voltei para 100% */
-                priority /* Assim terá prioridade no carregamento não sendo o ultimo elemento a carregar */
-                alt='Calendário simbolizando aplicação em funcionamento' />
-            </ProfileImg>
+
+          {isSignedId ? (
+            <Button size="sm" disabled>
+              Conectado
+              <Check />
+            </Button>
           ) : (
             <Button
-              variant='secondary'
-              size='sm'
+              variant="secondary"
+              size="sm"
               onClick={handleConnectCalendar}
             >
               Conectar
@@ -69,13 +70,12 @@ export default function Register() {
           </AuthError>
         )}
 
-        <Button type="submit" disabled={!isSignedIn}>
+        <Button type="submit" disabled={!isSignedId}>
           Próximo passo
           <ArrowRight />
         </Button>
 
       </ConnectBox>
-
     </Container>
   );
 };
