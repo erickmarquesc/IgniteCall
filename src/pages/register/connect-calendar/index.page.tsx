@@ -5,7 +5,7 @@ import { ArrowRight, Check } from "phosphor-react";
 import { Container, Header } from "../styles";
 import { useRouter } from "next/router";
 
-export default function Register() {
+export default function ConnectCalendar() {
   const session = useSession(); // contem as informações do usuário
   const sessionUserData = session.data;
 
