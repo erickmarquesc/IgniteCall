@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
-import { Adapter } from 'next-auth/adapters'
-import { parseCookies, destroyCookie } from 'nookies'
-import { prisma } from '../prisma'
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
+import { parseCookies, destroyCookie } from 'nookies';
+import { Adapter } from 'next-auth/adapters';
+import { prisma } from '../prisma';
 
 export function PrismaAdapter(
   req: NextApiRequest | NextPageContext['req'],
@@ -39,7 +39,6 @@ export function PrismaAdapter(
         avatar_url: prismaUser.avatar_url!,
       }
     },
-
     async getUser(id) {
       const user = await prisma.user.findUnique({
         where: {
@@ -108,7 +107,6 @@ export function PrismaAdapter(
         avatar_url: user.avatar_url!,
       }
     },
-
     async updateUser(user) {
       const prismaUser = await prisma.user.update({
         where: {
@@ -130,7 +128,6 @@ export function PrismaAdapter(
         avatar_url: prismaUser.avatar_url!,
       }
     },
-
     async linkAccount(account) {
       await prisma.account.create({
         data: {
@@ -148,7 +145,6 @@ export function PrismaAdapter(
         },
       })
     },
-
     async createSession({ sessionToken, userId, expires }) {
       await prisma.session.create({
         data: {
@@ -164,7 +160,6 @@ export function PrismaAdapter(
         expires,
       }
     },
-
     async getSessionAndUser(sessionToken) {
       const prismaSession = await prisma.session.findUnique({
         where: {
@@ -197,7 +192,6 @@ export function PrismaAdapter(
         },
       }
     },
-
     async updateSession({ sessionToken, userId, expires }) {
       const prismaSession = await prisma.session.update({
         where: {
@@ -215,7 +209,6 @@ export function PrismaAdapter(
         expires: prismaSession.expires,
       }
     },
-
     async deleteSession(sessionToken) {
       await prisma.session.delete({
         where: {
