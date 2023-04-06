@@ -1,19 +1,20 @@
 import {
+  FormError,
   IntervalBox,
   IntervalDay,
-  IntervalInputs,
   IntervalItem,
+  IntervalInputs,
   IntervalContainer,
-  FormError,
 } from "./styles";
 import { Button, Checkbox, Heading, MultiStep, Text, TextInput } from "@ignite-ui/react";
+import { convertTimeStringToMinutes } from "@/utils/convert-time-string-to-minuts";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { getWeekDays } from "@/utils/get-week-days";
 import { Container, Header } from "../styles";
 import { ArrowRight } from "phosphor-react";
+import { api } from "@/lib/axios";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { convertTimeStringToMinutes } from "@/utils/convert-time-string-to-minuts";
 
 const timeIntervalsFormSchema = z.object({
   intervals: z.array(z.object({
@@ -32,12 +33,12 @@ const timeIntervalsFormSchema = z.object({
             return {
               weekDay: interval.weekDay,
               startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
-              endTimeInMinuts: convertTimeStringToMinutes(interval.endTime),
+              endTimeInMinutes: convertTimeStringToMinutes(interval.endTime),
             }
           })
         }).refine((intervals) => {
           return intervals.every(
-            (interval) => interval.endTimeInMinuts - 60 >= interval.startTimeInMinutes)
+            (interval) => interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes)
         }, {
           message: 'É necessário que haja um intervalo de 1h entre os horários!'
         })
@@ -78,7 +79,8 @@ export default function TimeIntervals() {
 
   const handleSetTimeIntervals = async (data: any) => {
     const { intervals } = data as TimeIntervalsFormOutput
-    console.log(intervals)
+
+    await api.post('/users/time-intervals', { intervals });
   };
 
   return (
