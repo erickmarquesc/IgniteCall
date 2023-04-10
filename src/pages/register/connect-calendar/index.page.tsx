@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 export default function ConnectCalendar() {
   const session = useSession(); // contem as informações do usuário
-  const sessionUserData = session.data;
+  const sessionUserData = session.data?.user;
 
   const router = useRouter();
   const hasAuthError = !!router.query.error;
@@ -15,6 +15,8 @@ export default function ConnectCalendar() {
   const isSignedId = session.status === "authenticated";
 
   const handleConnectCalendar = async () => await signIn('google');
+
+  const handleNavigateToNextStep = async () => await router.push('/register/time-intervals');
 
   return (
     <Container>
@@ -35,12 +37,12 @@ export default function ConnectCalendar() {
         <ConnecItem>
           <div>
             <Text>
-              {sessionUserData?.user?.name
-                ? sessionUserData?.user?.name
+              {sessionUserData
+                ? sessionUserData?.name
                 : 'Google Agenda'}
             </Text>
-            {sessionUserData?.user?.email
-              ? <Text size={"xs"}>{sessionUserData?.user?.email}</Text>
+            {sessionUserData
+              ? <Text size={"xs"}>{sessionUserData?.email}</Text>
               : <></>
             }
           </div>
@@ -70,7 +72,10 @@ export default function ConnectCalendar() {
           </AuthError>
         )}
 
-        <Button type="submit" disabled={!isSignedId}>
+        <Button
+          type="submit"
+          disabled={!isSignedId}
+          onClick={handleNavigateToNextStep}>
           Próximo passo
           <ArrowRight />
         </Button>
