@@ -14,6 +14,7 @@ model User {
   name           String
   email          String?   @unique
   email_verified DateTime?
+  bio            String?
   avatar_url     String?
   created_at     DateTime  @default(now())
 
