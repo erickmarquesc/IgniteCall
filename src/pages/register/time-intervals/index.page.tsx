@@ -15,6 +15,7 @@ import { Container, Header } from "../styles";
 import { ArrowRight } from "phosphor-react";
 import { api } from "@/lib/axios";
 import { z } from "zod";
+import { useRouter } from "next/router";
 
 const timeIntervalsFormSchema = z.object({
   intervals: z.array(z.object({
@@ -77,10 +78,14 @@ export default function TimeIntervals() {
   const weekDays = getWeekDays();
   const intervalWatch = watch('intervals');
 
+  const router = useRouter();
+
   const handleSetTimeIntervals = async (data: any) => {
     const { intervals } = data as TimeIntervalsFormOutput
 
     await api.post('/users/time-intervals', { intervals });
+
+    await router.push('/register/update-profile');
   };
 
   return (
