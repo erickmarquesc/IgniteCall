@@ -13,7 +13,7 @@ export const Form = styled(Box, {
   
 });
 
-export const FromAnnotation = styled('div', {
+export const FormAnnotation = styled('div', {
   marginTop: '$2',
 
   [`> ${Text}`]: {

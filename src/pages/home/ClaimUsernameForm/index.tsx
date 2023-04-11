@@ -1,6 +1,6 @@
 import { Button, Text, TextInput } from "@ignite-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FromAnnotation } from "./styles";
+import { Form, FormAnnotation } from "./styles";
 import { ArrowRight } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -56,14 +56,14 @@ export function ClaimUsernameForm() {
         </Button>
 
       </Form>
-      <FromAnnotation>
+      <FormAnnotation>
         <Text size={'sm'}>
           {errors.username
             ? errors.username.message
             : isValid ? 'Usuário válido' : 'Digite o nome do usuário desejado'
           }
         </Text>
-      </FromAnnotation>
+      </FormAnnotation>
     </>
   );
 };
