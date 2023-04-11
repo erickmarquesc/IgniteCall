@@ -20,7 +20,7 @@ const claimUsernameFormSchema = z.object({
 type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
 
 export function ClaimUsernameForm() {
-  const { register, handleSubmit, formState: { errors, isValid, isSubmitting } } = useForm<ClaimUsernameFormData>({
+  const { register, handleSubmit, formState: { isValid, isSubmitting } } = useForm<ClaimUsernameFormData>({
     /* Estrutura para validações */
     resolver: zodResolver(claimUsernameFormSchema),
   });
@@ -35,6 +35,13 @@ export function ClaimUsernameForm() {
      * /paginaQueVouMandarOusuario
      * o simbulo de ? é para indicar que estou mandando um parametro
      * e então envio a variável que desejo */
+  };
+
+  const UserNameFormErrosMessage = () => {
+    if (!isValid) {
+      return ('O usuário deve ter pelomenos 6 caracteres entre letras e infens.')
+    }
+    return ('Usuário válido!')
   };
 
   return (
@@ -56,12 +63,9 @@ export function ClaimUsernameForm() {
         </Button>
 
       </Form>
-      <FormAnnotation>
+      <FormAnnotation >
         <Text size={'sm'}>
-          {errors.username
-            ? errors.username.message
-            : isValid ? 'Usuário válido' : 'Digite o nome do usuário desejado'
-          }
+          {UserNameFormErrosMessage()}
         </Text>
       </FormAnnotation>
     </>
