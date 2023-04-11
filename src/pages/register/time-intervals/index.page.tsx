@@ -75,7 +75,7 @@ export default function TimeIntervals() {
     name: 'intervals',
   });
 
-  const weekDays = getWeekDays();
+  const weekDays = getWeekDays({short: false});
   const intervalWatch = watch('intervals');
 
   const router = useRouter();
