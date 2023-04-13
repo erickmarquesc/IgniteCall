@@ -1,3 +1,5 @@
+import { CaretLeft, CaretRight } from "phosphor-react";
+import { getWeekDays } from "@/utils/get-week-days";
 import {
   CalendarContainer,
   CalendarHeader,
@@ -6,24 +8,52 @@ import {
   CalendarBody,
   CalendarDay,
 } from "./styles";
-import { CaretLeft, CaretRight } from "phosphor-react";
-import { getWeekDays } from "@/utils/get-week-days";
+import { useState } from "react";
+import dayjs from "dayjs";
+import { CalcWeekCurrentMonth } from "./CalcWeekCurrentMonth";
 
 export function Calendar() {
+  const [currentDate, setCurrentDate] = useState(() => {
+    return (
+      dayjs().set("date", 1) /* Mês atual */
+    )
+  });
+
+  /* FORMATO DO MÊS POR EXTENSO */
+  const currentMonth = currentDate.format('MMMM');
+  /* FORMATO DO ANO POR EXTENSO */
+  const currentYear = currentDate.format('YYYY');
+
   const shortWeekDays = getWeekDays({ short: true });
+
+  const handlePreviousMonth = () => {
+    const previousMonthDate = currentDate.subtract(1, 'month');
+    setCurrentDate(previousMonthDate);
+  };
+
+  const handleNextMonth = () => {
+    const nextMonthDate = currentDate.add(1, 'month');
+    setCurrentDate(nextMonthDate);
+  };
+
+  const calendarWeeks = CalcWeekCurrentMonth(currentDate);
 
   return (
     <CalendarContainer>
       <CalendarHeader>
         <CalendarTitle>
-          Abril <span>2023</span>
+          {currentMonth} <span>{currentYear}</span>
         </CalendarTitle>
 
         <CalendarActions>
-          <button>
+          <button
+            title="Previous month"
+            onClick={handlePreviousMonth}>
             <CaretLeft />
           </button>
-          <button>
+          <button
+            title="Next month"
+            onClick={handleNextMonth}>
             <CaretRight />
           </button>
         </CalendarActions>
@@ -40,42 +70,21 @@ export function Calendar() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><CalendarDay>1</CalendarDay></td>
-            <td><CalendarDay disabled>2</CalendarDay></td>
-            <td><CalendarDay>3</CalendarDay></td>
-          </tr>
-          <tr>
-            <td><CalendarDay>4</CalendarDay></td>
-            <td><CalendarDay>5</CalendarDay></td>
-            <td><CalendarDay>6</CalendarDay></td>
-            <td><CalendarDay>7</CalendarDay></td>
-            <td><CalendarDay>8</CalendarDay></td>
-            <td><CalendarDay disabled>9</CalendarDay></td>
-            <td><CalendarDay>10</CalendarDay></td>
-          </tr>
-          <tr>
-            <td><CalendarDay>4</CalendarDay></td>
-            <td><CalendarDay>5</CalendarDay></td>
-            <td><CalendarDay>6</CalendarDay></td>
-            <td><CalendarDay>7</CalendarDay></td>
-            <td><CalendarDay>8</CalendarDay></td>
-            <td><CalendarDay disabled>9</CalendarDay></td>
-            <td><CalendarDay>10</CalendarDay></td>
-          </tr>
-          <tr>
-            <td><CalendarDay>4</CalendarDay></td>
-            <td><CalendarDay>5</CalendarDay></td>
-            <td><CalendarDay>6</CalendarDay></td>
-            <td><CalendarDay>7</CalendarDay></td>
-            <td><CalendarDay>8</CalendarDay></td>
-            <td><CalendarDay disabled>9</CalendarDay></td>
-            <td><CalendarDay>10</CalendarDay></td>
-          </tr>
+            {calendarWeeks.map(({week,days}) => {
+              return (
+                <tr key={week}>
+                  {days.map(({date,disabled}) => {
+                    return (
+                      <td key={date.toString()}>
+                        <CalendarDay disabled={disabled}>
+                          {date.get('date')}
+                        </CalendarDay>
+                      </td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
         </tbody>
       </CalendarBody>
     </CalendarContainer>
