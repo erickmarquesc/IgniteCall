@@ -1,6 +1,3 @@
-import { CalcWeekCurrentMonth } from "./CalcWeekCurrentMonth";
-import { CaretLeft, CaretRight } from "phosphor-react";
-import { getWeekDays } from "@/utils/get-week-days";
 import {
   CalendarContainer,
   CalendarHeader,
@@ -9,15 +6,19 @@ import {
   CalendarBody,
   CalendarDay,
 } from "./styles";
+import { CalcWeekCurrentMonth } from "./CalcWeekCurrentMonth";
+import { CaretLeft, CaretRight } from "phosphor-react";
+import { getWeekDays } from "@/utils/get-week-days";
 import { useState } from "react";
 import dayjs from "dayjs";
 
 interface ICalendarProps {
   selectedDate: Date | null,
   onDeteSelected: (date: Date) => void,
-}
+};
 
 export function Calendar({ onDeteSelected, selectedDate }: ICalendarProps) {
+
   const [currentDate, setCurrentDate] = useState(() => {
     return (
       dayjs().set("date", 1) /* Mês atual */
@@ -82,7 +83,7 @@ export function Calendar({ onDeteSelected, selectedDate }: ICalendarProps) {
                   return (
                     <td key={date.toString()}>
                       <CalendarDay
-                        onClick={()=> onDeteSelected(date.toDate())}
+                        onClick={() => onDeteSelected(date.toDate())}
                         disabled={disabled}>
                         {date.get('date')}
                       </CalendarDay>
