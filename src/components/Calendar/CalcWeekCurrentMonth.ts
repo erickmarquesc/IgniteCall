@@ -1,3 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { api } from "@/lib/axios";
 import { useMemo } from "react";
 import dayjs from "dayjs";
 
@@ -5,13 +8,32 @@ interface ICalendarWeek {
   week: number,
   days: Array<{
     date: dayjs.Dayjs,
-    disabled: boolean,
+    disabled: boolean | undefined,
   }>,
 };
 
 type CalendarWeeks = ICalendarWeek[];
 
+interface IBlockDates {
+  blockedWeekDays: number[],
+};
+
 export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
+
+  const router = useRouter();
+  const username = String(router.query.username);
+
+  const { data: blockedDates } = useQuery<IBlockDates>(
+    ['blocked-dates', currentDate.get('year'), currentDate.get('month')],
+    async () => {
+      const response = await api.get(`/users/${username}/blocked-dates`, {
+        params: {
+          year: currentDate.get('year'),
+          month: currentDate.get('month'),
+        },
+      })
+      return response.data;
+    });
 
   /*
    * Usei o memo aqui por questões de calculo 
@@ -63,7 +85,12 @@ export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
         return { date, disabled: true }
       }),
       ...daysInMonthArray.map((date) => {
-        return { date, disabled: date.endOf('day').isBefore(new Date()) }
+        return {
+          date,
+          disabled:
+            date.endOf('day').isBefore(new Date()) ||
+            blockedDates?.blockedWeekDays.includes(date.get('day'))
+        }
       }),
       ...nextMonthFillArray.map((date) => {
         return { date, disabled: true }
@@ -85,7 +112,7 @@ export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
       }, []);
 
     return calendarWeeks;
-  }, [currentDate]);
+  }, [currentDate, blockedDates]);
 
   return calendarWeeks;
 };
