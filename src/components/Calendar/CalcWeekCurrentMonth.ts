@@ -8,7 +8,7 @@ interface ICalendarWeek {
   week: number,
   days: Array<{
     date: dayjs.Dayjs,
-    disabled: boolean | undefined,
+    disabled: boolean,
   }>,
 };
 
@@ -16,6 +16,7 @@ type CalendarWeeks = ICalendarWeek[];
 
 interface IBlockDates {
   blockedWeekDays: number[],
+  blockedDates: number[],
 };
 
 export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
@@ -29,12 +30,12 @@ export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
       const response = await api.get(`/users/${username}/blocked-dates`, {
         params: {
           year: currentDate.get('year'),
-          month: currentDate.get('month'),
+          month: currentDate.get('month') + 1,
         },
       })
       return response.data;
     });
-
+  
   /*
    * Usei o memo aqui por questões de calculo 
    * assim os calculos são memorizados 
@@ -56,6 +57,10 @@ export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
      */
 
     const totalDaysWeek = 7; // 7 days
+
+    if (!blockedDates) {
+      return [];
+    };
 
     const daysInMonthArray = Array.from({
       length: currentDate.daysInMonth(),
@@ -89,7 +94,8 @@ export function CalcWeekCurrentMonth(currentDate: dayjs.Dayjs) {
           date,
           disabled:
             date.endOf('day').isBefore(new Date()) ||
-            blockedDates?.blockedWeekDays.includes(date.get('day'))
+            blockedDates?.blockedWeekDays.includes(date.get('day')) ||
+            blockedDates.blockedDates.includes(date.get('date')),
         }
       }),
       ...nextMonthFillArray.map((date) => {
