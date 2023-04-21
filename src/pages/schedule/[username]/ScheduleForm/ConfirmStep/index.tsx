@@ -5,6 +5,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
+import { api } from "@/lib/axios";
 
 const confirmFormSchema = z.object({
   name: z.string().min(3, { message: 'O nome precisa no mínimo 3 caracteres' }),
@@ -27,7 +29,22 @@ export function ConfirmStep({ schedulingDate, onCancelConfirmation }: IConfirmSt
       resolver: zodResolver(confirmFormSchema),
     });
 
-  const handleConfirmScheduling = (data: ConfirmFormData) => { };
+  const router = useRouter();
+  const username = String(router.query.username);
+
+  const handleConfirmScheduling = async (data: ConfirmFormData) => {
+    const { name, email, observations } = data;
+
+    await api.post(`/users/${username}/schedule`, {
+      name,
+      email,
+      observations,
+      date: schedulingDate,
+    })
+
+    /* await router.push(`/schedule/${username}`); */
+    onCancelConfirmation();
+  };
 
   const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY');
   const describedTime = dayjs(schedulingDate).format('HH:mm[h]');
