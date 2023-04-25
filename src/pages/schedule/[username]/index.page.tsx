@@ -3,6 +3,7 @@ import { Container, UserHeader } from "./styles";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { prisma } from "@/lib/prisma";
 import { ScheduleForm } from "./ScheduleForm";
+import { NextSeo } from "next-seo";
 
 interface IScheduleProps {
   user: {
@@ -14,15 +15,21 @@ interface IScheduleProps {
 
 export default function Schedule({ user }: IScheduleProps) {
   return (
-    <Container>
-      <UserHeader>
-        <Avatar src={user.avatarURL} />
-        <Heading>{user.name}</Heading>
-        <Text>{user.bio}</Text>
-      </UserHeader>
+    <>
+      <NextSeo
+        title={`Agendar com ${user.name} | Ignite Call`}
+        noindex /* isso faz com o google não permita chegar nessa página sem passar pelo fluxo */
+      />
+      <Container>
+        <UserHeader>
+          <Avatar src={user.avatarURL} />
+          <Heading>{user.name}</Heading>
+          <Text>{user.bio}</Text>
+        </UserHeader>
 
-      <ScheduleForm/>
-    </Container>
+        <ScheduleForm />
+      </Container>
+    </>
   );
 };
 

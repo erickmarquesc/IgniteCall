@@ -4,6 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import { ArrowRight, Check } from "phosphor-react";
 import { Container, Header } from "../styles";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 export default function ConnectCalendar() {
   const session = useSession(); // contem as informações do usuário
@@ -19,68 +20,75 @@ export default function ConnectCalendar() {
   const handleNavigateToNextStep = async () => await router.push('/register/time-intervals');
 
   return (
-    <Container>
-      <Header>
-        <Heading as='strong'>
-          Conecte sua agenda!
-        </Heading>
-        <Text>
-          Conecte o seu calendário para verificar automaticamente as horas ocupadas
-          e os novos eventos à medida em que são agendados.
-        </Text>
+    <>
+      <NextSeo
+        title='Conecte sua agenda do Google | Ignite Call'
+        description='Conecte sua a genda através da conta do Google.'
+        noindex /* isso faz com o google não permita chegar nessa página sem passar pelo fluxo */
+      />
+      <Container>
+        <Header>
+          <Heading as='strong'>
+            Conecte sua agenda!
+          </Heading>
+          <Text>
+            Conecte o seu calendário para verificar automaticamente as horas ocupadas
+            e os novos eventos à medida em que são agendados.
+          </Text>
 
-        <MultiStep size={4} currentStep={2} />
+          <MultiStep size={4} currentStep={2} />
 
-      </Header>
+        </Header>
 
-      <ConnectBox>
-        <ConnecItem>
-          <div>
-            <Text>
+        <ConnectBox>
+          <ConnecItem>
+            <div>
+              <Text>
+                {sessionUserData
+                  ? sessionUserData?.name
+                  : 'Google Agenda'}
+              </Text>
               {sessionUserData
-                ? sessionUserData?.name
-                : 'Google Agenda'}
-            </Text>
-            {sessionUserData
-              ? <Text size={"xs"}>{sessionUserData?.email}</Text>
-              : <></>
-            }
-          </div>
+                ? <Text size={"xs"}>{sessionUserData?.email}</Text>
+                : <></>
+              }
+            </div>
 
-          {isSignedId ? (
-            <Button size="sm" disabled>
-              Conectado
-              <Check />
-            </Button>
-          ) : (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleConnectCalendar}
-            >
-              Conectar
-              <ArrowRight />
-            </Button>
+            {isSignedId ? (
+              <Button size="sm" disabled>
+                Conectado
+                <Check />
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleConnectCalendar}
+              >
+                Conectar
+                <ArrowRight />
+              </Button>
+            )}
+
+          </ConnecItem>
+
+          {hasAuthError && (
+            <AuthError size='sm'>
+              Falha ao se conectar ao Google, verifique se você habilitou
+              a permissão de acesso ao Google Calendar.
+            </AuthError>
           )}
 
-        </ConnecItem>
+          <Button
+            type="submit"
+            disabled={!isSignedId}
+            onClick={handleNavigateToNextStep}>
+            Próximo passo
+            <ArrowRight />
+          </Button>
 
-        {hasAuthError && (
-          <AuthError size='sm'>
-            Falha ao se conectar ao Google, verifique se você habilitou
-            a permissão de acesso ao Google Calendar.
-          </AuthError>
-        )}
-
-        <Button
-          type="submit"
-          disabled={!isSignedId}
-          onClick={handleNavigateToNextStep}>
-          Próximo passo
-          <ArrowRight />
-        </Button>
-
-      </ConnectBox>
-    </Container>
+        </ConnectBox>
+      </Container>
+    </>
   );
 };

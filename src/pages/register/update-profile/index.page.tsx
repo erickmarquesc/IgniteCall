@@ -11,6 +11,7 @@ import { unstable_getServerSession } from "next-auth";
 import { buildNextAuthOptions } from "@/pages/api/auth/[...nextauth].api";
 import { api } from "@/lib/axios";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -35,49 +36,56 @@ export default function Register() {
   };
 
   return (
-    <Container>
-      <Header>
-        <Heading as='strong'>
-          Bem-vindo ao Ignite Call!
-        </Heading>
-        <Text>
-          Precisamos de algumas informações para criar seu perfil!
-          Ah, você pode editar essas informações depois.
-        </Text>
+    <>
+      <NextSeo
+        title='Atualize seu perfil | Ignite Call'
+        noindex /* isso faz com o google não permita chegar nessa página sem passar pelo fluxo */
+      />
+      
+      <Container>
+        <Header>
+          <Heading as='strong'>
+            Bem-vindo ao Ignite Call!
+          </Heading>
+          <Text>
+            Precisamos de algumas informações para criar seu perfil!
+            Ah, você pode editar essas informações depois.
+          </Text>
 
-        <MultiStep size={4} currentStep={4} />
+          <MultiStep size={4} currentStep={4} />
 
-        <ProfileBox as='form' onSubmit={handleSubmit(handleUpdateProfile)} >
-          <AvatarContainer>
-            <Avatar
-              src={session.data?.user.avatar_url}
-              alt={session.data?.user.username}
-            />
-            <Text>
-              {session.data?.user.username}
-            </Text>
-          </AvatarContainer>
+          <ProfileBox as='form' onSubmit={handleSubmit(handleUpdateProfile)} >
+            <AvatarContainer>
+              <Avatar
+                src={session.data?.user.avatar_url}
+                alt={session.data?.user.username}
+              />
+              <Text>
+                {session.data?.user.username}
+              </Text>
+            </AvatarContainer>
 
-          <label>
-            <Text size='sm'>
-              Sobre você
-            </Text>
-            <TextArea
-              placeholder="Descreva-se de forma amigável e convidativa."
-              {...register('bio')} />
-            <FormAnnotation size='sm'>
-              Fale um pouco sobre você. Isto será exibido em sua página pessoal.
-            </FormAnnotation>
-          </label>
+            <label>
+              <Text size='sm'>
+                Sobre você
+              </Text>
+              <TextArea
+                placeholder="Descreva-se de forma amigável e convidativa."
+                {...register('bio')} />
+              <FormAnnotation size='sm'>
+                Fale um pouco sobre você. Isto será exibido em sua página pessoal.
+              </FormAnnotation>
+            </label>
 
-          <Button type="submit" disabled={isSubmitting}>
-            Finalizar
-            <ArrowRight />
-          </Button>
-        </ProfileBox>
+            <Button type="submit" disabled={isSubmitting}>
+              Finalizar
+              <ArrowRight />
+            </Button>
+          </ProfileBox>
 
-      </Header>
-    </Container>
+        </Header>
+      </Container>
+    </>
   );
 };
 
